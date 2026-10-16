@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Noticias en vivo</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="encabezado">
+    <div class="contenedor encabezado__interior">
+      <div>
+        <h1>Noticias en vivo</h1>
+        <p class="encabezado__sub">Últimas noticias espaciales · Spaceflight News API</p>
+      </div>
+      <form id="form-busqueda" class="busqueda" role="search">
+        <input type="search" id="busqueda" placeholder="Buscar noticias…" aria-label="Buscar noticias">
+        <button type="submit">Buscar</button>
+        <button type="button" id="btn-refrescar" class="btn-secundario">&#8635; Refrescar</button>
+      </form>
+    </div>
+  </header>
+
+  <main class="contenedor">
+    <p id="estado" class="estado" role="status" aria-live="polite"></p>
+    <section id="noticias" class="noticias" aria-label="Listado de noticias"></section>
+  </main>
+
+  <div id="modal" class="modal" hidden>
+    <article class="modal__caja" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+      <button type="button" id="modal-cerrar" class="modal__cerrar" aria-label="Cerrar">&times;</button>
+      <img id="modal-img" alt="">
+      <div class="modal__cuerpo">
+        <p id="modal-meta" class="meta"></p>
+        <h2 id="modal-titulo"></h2>
+        <p id="modal-resumen"></p>
+        <a id="modal-enlace" class="boton-enlace" target="_blank" rel="noopener noreferrer">Leer artículo completo &rarr;</a>
+      </div>
+    </article>
+  </div>
+
+  <footer class="pie">
+    <p>Reto 5 · Programación web cliente · UVEG</p>
+  </footer>
+
+  <script src="app.js"></script>
+</body>
+</html>
