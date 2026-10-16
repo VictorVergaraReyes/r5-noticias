@@ -41,6 +41,40 @@ button:hover { background: var(--agua-oscuro); color: var(--blanco); border-colo
 .btn-secundario { background: transparent; color: var(--blanco); }
 button:disabled { opacity: 0.6; cursor: wait; }
 
+/* Hero / carrusel */
+.hero { position: relative; height: clamp(300px, 52vh, 480px); overflow: hidden; background: var(--agua-oscuro); }
+.hero[hidden] { display: none; }
+.hero__pistas { display: flex; height: 100%; transition: transform 0.6s ease; }
+.hero__slide {
+  min-width: 100%; height: 100%; position: relative; display: flex; align-items: flex-end;
+  background-size: cover; background-position: center;
+}
+.hero__slide::before {
+  content: ""; position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(8, 70, 65, 0.92) 0%, rgba(8, 70, 65, 0.35) 55%, rgba(31, 181, 168, 0.1) 100%);
+}
+.hero__texto { position: relative; color: var(--blanco); padding: 0 4.5rem 3.2rem; max-width: 900px; display: flex; flex-direction: column; gap: 0.6rem; }
+.hero__texto .meta { color: var(--agua-claro); }
+.hero__texto h2 { font-size: clamp(1.4rem, 3.4vw, 2.2rem); line-height: 1.2; }
+.hero__texto h2 button { all: unset; cursor: pointer; }
+.hero__texto h2 button:hover, .hero__texto h2 button:focus-visible { text-decoration: underline; }
+.hero__texto p.resumen { font-size: 1rem; opacity: 0.95; }
+
+.hero__flecha {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 2.8rem; height: 2.8rem; padding: 0;
+  border-radius: 50%; background: rgba(255, 255, 255, 0.85); border-color: transparent; color: var(--agua-oscuro); z-index: 2;
+}
+.hero__flecha--prev { left: 0.8rem; }
+.hero__flecha--next { right: 0.8rem; }
+.hero__puntos { position: absolute; bottom: 1rem; left: 0; right: 0; display: flex; justify-content: center; gap: 0.5rem; z-index: 2; }
+.hero__punto { width: 12px; height: 12px; padding: 0; border-radius: 50%; border: 2px solid var(--blanco); background: transparent; }
+.hero__punto.activo { background: var(--blanco); }
+
+@media (max-width: 600px) {
+  .hero__texto { padding: 0 3.4rem 3rem 1.2rem; }
+  .hero__texto p.resumen { display: none; }
+}
+
 /* Contenido */
 main { flex: 1; padding: 1.5rem 0 2rem; }
 .estado { text-align: center; color: var(--texto-suave); font-size: 1.05rem; margin-bottom: 1rem; min-height: 1.6rem; }
