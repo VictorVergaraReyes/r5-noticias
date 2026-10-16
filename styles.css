@@ -98,6 +98,16 @@ main { flex: 1; padding: 1.5rem 0 2rem; }
 .tarjeta h2 button:hover, .tarjeta h2 button:focus-visible { text-decoration: underline; }
 .tarjeta p.resumen { font-size: 0.95rem; color: var(--texto); }
 
+/* Paginación */
+.paginacion { display: flex; flex-wrap: wrap; justify-content: center; align-items: center; gap: 0.5rem; margin-top: 2rem; }
+.paginacion[hidden] { display: none; }
+.paginacion button { background: var(--blanco); border-color: var(--agua); color: var(--agua-oscuro); padding: 0.5rem 0.9rem; }
+.paginacion button:hover:not(:disabled) { background: var(--agua-oscuro); color: var(--blanco); border-color: var(--agua-oscuro); }
+.paginacion button:disabled { opacity: 0.45; cursor: not-allowed; }
+.paginacion__numeros { display: flex; flex-wrap: wrap; gap: 0.35rem; align-items: center; }
+.paginacion__numeros button.actual { background: var(--agua); color: var(--blanco); border-color: var(--agua); }
+.paginacion__numeros .puntos { color: var(--texto-suave); padding: 0 0.2rem; }
+
 /* Modal */
 .modal { position: fixed; inset: 0; background: rgba(14, 60, 56, 0.6); display: flex; align-items: center; justify-content: center; padding: 1rem; z-index: 10; }
 .modal[hidden] { display: none; }

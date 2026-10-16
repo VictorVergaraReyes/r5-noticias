@@ -26,15 +26,69 @@ function formatearFecha(iso) {
   return new Date(iso).toLocaleString("es-MX", { dateStyle: "medium", timeStyle: "short" });
 }
 
-async function obtenerNoticias(busqueda = "") {
-  const params = new URLSearchParams({ limit: LIMITE });
+let paginaActual = 1;
+let totalPaginas = 1;
+
+async function obtenerNoticias(busqueda = "", pagina = 1) {
+  const params = new URLSearchParams({ limit: LIMITE, offset: (pagina - 1) * LIMITE });
   if (busqueda) params.set("search", busqueda);
 
   const respuesta = await fetch(`${API_URL}?${params}`);
   if (!respuesta.ok) throw new Error(`Error HTTP ${respuesta.status}`);
   const datos = await respuesta.json();
-  return datos.results || [];
+  return { noticias: datos.results || [], total: datos.count || 0 };
 }
+
+/* ---------- Paginación ---------- */
+const paginacion = document.getElementById("paginacion");
+const pagPrev = document.getElementById("pag-prev");
+const pagNext = document.getElementById("pag-next");
+const pagNumeros = document.getElementById("pag-numeros");
+
+function paginasVisibles() {
+  // Primera, última y las cercanas a la actual; los huecos se marcan con null
+  const set = new Set([1, totalPaginas, paginaActual - 1, paginaActual, paginaActual + 1]);
+  const lista = [...set].filter((p) => p >= 1 && p <= totalPaginas).sort((a, b) => a - b);
+  const resultado = [];
+  lista.forEach((p, i) => {
+    if (i > 0 && p - lista[i - 1] > 1) resultado.push(null);
+    resultado.push(p);
+  });
+  return resultado;
+}
+
+function renderizarPaginacion() {
+  paginacion.hidden = totalPaginas <= 1;
+  pagPrev.disabled = paginaActual <= 1;
+  pagNext.disabled = paginaActual >= totalPaginas;
+  pagNumeros.replaceChildren(...paginasVisibles().map((p) => {
+    if (p === null) {
+      const s = document.createElement("span");
+      s.className = "puntos";
+      s.textContent = "…";
+      return s;
+    }
+    const b = document.createElement("button");
+    b.type = "button";
+    b.textContent = p;
+    if (p === paginaActual) {
+      b.classList.add("actual");
+      b.setAttribute("aria-current", "page");
+    }
+    b.addEventListener("click", () => irAPagina(p));
+    return b;
+  }));
+}
+
+function irAPagina(p) {
+  if (p < 1 || p > totalPaginas || p === paginaActual) return;
+  paginaActual = p;
+  cargarNoticias();
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+pagPrev.addEventListener("click", () => irAPagina(paginaActual - 1));
+pagNext.addEventListener("click", () => irAPagina(paginaActual + 1));
 
 function crearTarjeta(noticia, indice) {
   const tarjeta = document.createElement("article");
@@ -164,15 +218,20 @@ async function cargarNoticias() {
   detenerAutoplay();
 
   try {
-    noticiasActuales = await obtenerNoticias(busqueda);
+    const { noticias, total } = await obtenerNoticias(busqueda, paginaActual);
+    noticiasActuales = noticias;
+    totalPaginas = Math.max(1, Math.ceil(total / LIMITE));
     if (noticiasActuales.length === 0) {
+      paginacion.hidden = true;
       mostrarEstado("No hay noticias disponibles para tu búsqueda.");
       return;
     }
     renderizar(noticiasActuales);
-    mostrarEstado(`Actualizado a las ${new Date().toLocaleTimeString("es-MX")} · ${noticiasActuales.length} noticias`);
+    renderizarPaginacion();
+    mostrarEstado(`Página ${paginaActual} de ${totalPaginas} · ${total} noticias · actualizado a las ${new Date().toLocaleTimeString("es-MX")}`);
   } catch (error) {
     console.error(error);
+    paginacion.hidden = true;
     mostrarEstado("No se pudieron cargar las noticias. La API no está disponible o no hay conexión. Intenta refrescar.", true);
   } finally {
     btnRefrescar.disabled = false;
@@ -200,6 +259,6 @@ modal.addEventListener("click", (e) => { if (e.target === modal) cerrarModal(); 
 document.addEventListener("keydown", (e) => { if (e.key === "Escape") cerrarModal(); });
 
 btnRefrescar.addEventListener("click", cargarNoticias);
-formBusqueda.addEventListener("submit", (e) => { e.preventDefault(); cargarNoticias(); });
+formBusqueda.addEventListener("submit", (e) => { e.preventDefault(); paginaActual = 1; cargarNoticias(); });
 
 cargarNoticias();

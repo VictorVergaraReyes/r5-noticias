@@ -31,6 +31,11 @@
   <main class="contenedor">
     <p id="estado" class="estado" role="status" aria-live="polite"></p>
     <section id="noticias" class="noticias" aria-label="Listado de noticias"></section>
+    <nav id="paginacion" class="paginacion" aria-label="Paginación de noticias" hidden>
+      <button type="button" id="pag-prev">&larr; Anterior</button>
+      <span id="pag-numeros" class="paginacion__numeros"></span>
+      <button type="button" id="pag-next">Siguiente &rarr;</button>
+    </nav>
   </main>
 
   <div id="modal" class="modal" hidden>
